@@ -1,8 +1,8 @@
-import sqlite3
+import psycopg2
 
 
 def create_table():
-    conn = sqlite3.connect('lite.db')
+    conn = psycopg2.connect("dbname='database1' user='postgres' password='postgres123' host='localhost' port='5432'")
     cur = conn.cursor()
 
     cur.execute('CREATE TABLE IF NOT EXISTS store (item TEXT, quantity INTEGER, price REAL)')
@@ -10,15 +10,15 @@ def create_table():
     conn.close()
 
 def insert(item, quantity, price):
-    conn = sqlite3.connect('lite.db')
+    conn = psycopg2.connect("dbname='database1' user='postgres' password='postgres123' host='localhost' port='5432'")
     cur = conn.cursor()
 
-    cur.execute('INSERT INTO store VALUES (?, ?, ?)', (item, quantity, price))
+    cur.execute("INSERT INTO store VALUES (%s, %s, %s)", (item, quantity, price))
     conn.commit()
     conn.close()
 
 def view():
-    conn = sqlite3.connect('lite.db')
+    conn = psycopg2.connect("dbname='database1' user='postgres' password='postgres123' host='localhost' port='5432'")
     cur = conn.cursor()
 
     cur.execute("SELECT * FROM store")
@@ -29,22 +29,25 @@ def view():
 
 
 def delete(item):
-    conn = sqlite3.connect('lite.db')
+    conn = psycopg2.connect("dbname='database1' user='postgres' password='postgres123' host='localhost' port='5432'")
     cur = conn.cursor()
 
-    cur.execute("DELETE FROM store WHERE item =?", (item,))
+    cur.execute("DELETE FROM store WHERE item =%s", (item,))
     conn.commit()
     conn.close()
 
 
 def update(item, quantity, price):
-    conn = sqlite3.connect('lite.db')
+    conn = psycopg2.connect("dbname='database1' user='postgres' password='postgres123' host='localhost' port='5432'")
     cur = conn.cursor()
 
-    cur.execute("UPDATE store SET quantity =?, price=? WHERE item=?", (quantity, price, item))
+    cur.execute("UPDATE store SET quantity =%s, price=%s WHERE item=%s", (quantity, price, item))
     conn.commit()
     conn.close()
 
+create_table()
+# insert('Mango', 1, 2.00)
 print(view())
-update('Water bottle', 1, .5)
+# delete('Mango')
+update('Apples', 30, 15)
 print(view())
